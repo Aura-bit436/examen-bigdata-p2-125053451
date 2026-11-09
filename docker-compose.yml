@@ -1,0 +1,47 @@
+services:
+  hadoop:
+    build:
+      context: .
+      dockerfile: hadoop/Dockerfile
+    container_name: examen-hadoop
+    hostname: hadoop
+    volumes:
+      - ./mapreduce:/workspace/mapreduce
+      - ./ventas_125053451.csv:/workspace/ventas.csv:ro
+    networks:
+      - examen-red
+
+  db:
+    image: postgres:16
+    container_name: examen-db
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres_datos:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - examen-red
+
+  api:
+    build:
+      context: ./api
+    container_name: examen-api
+    hostname: api
+    env_file:
+      - .env
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - hadoop
+    networks:
+      - examen-red
+
+volumes:
+  postgres_datos:
+
+networks:
+  examen-red:
+    driver: bridge

@@ -1,0 +1,6 @@
+*.csv
+.env
+__pycache__/
+.venv/
+api/id_ed25519.pub
+mapreduce/salida_hadoop/*.crc
